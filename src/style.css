@@ -1,0 +1,9 @@
+body {
+  padding: 20px;
+}
+
+tbody {
+  display: block;
+  max-height: 700px;
+  overflow-y: scroll;
+}
