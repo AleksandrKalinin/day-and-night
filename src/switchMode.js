@@ -1,9 +1,9 @@
-export async function switchMode() {
+export function switchMode() {
   let doc = document.getElementById('main');
   let btnAuth = document.getElementById('btnAuth');
   let select = document.getElementById('category');
   let select2 = document.getElementById('api');
-  let switchBtn = document.getElementById('switchBtn');
+  let switchBtn = document.getElementById('btnSwitch');
   if ( doc.classList.contains('dark-mode') ) {
     doc.className = 'light-mode';
     select.className = 'light-mode';

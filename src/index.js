@@ -1,8 +1,15 @@
 import './style.css';
 
+async function load() {
+   let switchModule = await import('./switchMode.js');
+   let btnSwitch = document.getElementById('btnSwitch');
+   btnSwitch.addEventListener('click', switchModule.switchMode);
+}
+
 const URL = 'https://api.publicapis.org/entries';
 
 window.onload = function() {
+  load();
   getItems();
   const authTxt = document.getElementById('authTxt');
   const user = localStorage.getItem('user');
@@ -45,20 +52,23 @@ async function getCategories(data) {
   select.className = localStorage.getItem('color') || 'light-mode';
   select2.className = localStorage.getItem('color') || 'light-mode';
 
-  let btn = document.createElement('button');
+  let btnSwitch = document.getElementById('btnSwitch');
   let btnAuth = document.getElementById('btnAuth');
-  btn.setAttribute('id', 'switchBtn');
-  import('./switchMode.js').then((func) => { 
-    btn.addEventListener('click', func.switchMode)
-  });
+
   if ( doc.classList.contains('dark-mode') ) {
-    btn.innerText = 'Light mode';
-    btn.className = 'darkmode-button';
+    btnSwitch.innerText = 'Light mode';
+    btnSwitch.className = 'darkmode-button';
     btnAuth.className = 'darkmode-button';
   } else {
-    btn.innerText = 'Dark mode';
-    btn.className = 'lightmode-button';
+    btnSwitch.innerText = 'Dark mode';
+    btnSwitch.className = 'lightmode-button';
     btnAuth.className = 'lightmode-button';
+  }
+
+  if (localStorage.getItem('user')) {
+    btnAuth.innerText = 'Logout';
+  } else {
+    btnAuth.innerText = 'Login';
   }
 
   let head = document.getElementById('head');
@@ -83,9 +93,6 @@ async function getCategories(data) {
 
   head.appendChild(select);
   head.appendChild(select2);
-
-  
-  loginBlock.appendChild(btn);
 }
 
 function filterData(e) {
@@ -119,20 +126,14 @@ btnModal.addEventListener('click', authoriseUser);
 
 function authoriseUser() {
   let inputVal = document.getElementById('inputModal').value;
-  localStorage.setItem('user', inputVal);
-  modal.classList.toggle('modal-overlay_active');
-  const authTxt = document.getElementById('authTxt');
-  authTxt.innerText = `Welcome, ${inputVal} !`;
-  btnAuth.innerText = 'Logout';
-  document.getElementById('inputModal').value = '';
-}
-
-let btnStorage = document.getElementById('btnStorage');
-btnStorage.addEventListener('click', consoleStorage);
-
-function consoleStorage() {
-  localStorage.clear();
-  for (let i = 0; i < localStorage.length; i++)   {
-    console.log(localStorage.key(i) + "=[" + localStorage.getItem(localStorage.key(i)) + "]");
+  if (inputVal !== '') {
+    localStorage.setItem('user', inputVal);
+    modal.classList.toggle('modal-overlay_active');
+    const authTxt = document.getElementById('authTxt');
+    authTxt.innerText = `Welcome, ${inputVal} !`;
+    btnAuth.innerText = 'Logout';
+    document.getElementById('inputModal').value = '';
+  } else {
+    alert('Username cannot be empty');
   }
 }
