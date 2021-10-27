@@ -1,5 +1,18 @@
 body {
   padding: 20px;
+  transition: .1s all;
+  position: relative;
+}
+
+select {
+	transition: .1s all;
+	padding: 8px 10px;
+	width: 350px;
+}
+
+table {
+	min-width: 900px;
+	border-collapse: collapse;
 }
 
 tbody {
@@ -7,3 +20,51 @@ tbody {
   max-height: 700px;
   overflow-y: scroll;
 }
+
+tbody tr, tbody td {
+	border: 1px solid #E1E1E1;
+}
+
+tbody td {
+	padding: 8px;
+}
+
+#head {
+	width: 720px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 50px;
+}
+
+.dark-mode {
+  background-color: #282923;
+  color: #E1E1E1;
+}
+
+.light-mode {
+  background-color: #E1E1E1;
+  color: #282923;
+}
+
+#switchBtn {
+	position: absolute;
+	right: 20px;
+	top: 20px;
+	outline: none;
+	padding: 10px 20px;
+	transition: .1s all;
+}
+
+.darkmode-button {
+  background-color: #282923;
+  color: #E1E1E1;	
+  border: 1px solid #E1E1E1;
+}
+
+.lightmode-button {
+  background-color: #E1E1E1;
+  color: #282923;	
+  border: 1px solid #282923;
+}
+
