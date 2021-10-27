@@ -4,6 +4,11 @@ const URL = 'https://api.publicapis.org/entries';
 
 window.onload = function() {
   getItems();
+  const authTxt = document.getElementById('authTxt');
+  const user = localStorage.getItem('user');
+  if (user) {
+    authTxt.innerText = `Welcome, ${user}`;
+  }
 }
 
 let data;
@@ -26,6 +31,7 @@ async function getItems() {
   
 async function getCategories(data) {
   let doc = document.getElementById('main');
+  let loginBlock = document.getElementById('loginBlock');
 
   let select = document.createElement('select');
   select.setAttribute('name', 'Category');
@@ -40,14 +46,19 @@ async function getCategories(data) {
   select2.className = localStorage.getItem('color') || 'light-mode';
 
   let btn = document.createElement('button');
+  let btnAuth = document.getElementById('btnAuth');
   btn.setAttribute('id', 'switchBtn');
-  btn.addEventListener('click', switchMode);
+  import('./switchMode.js').then((func) => { 
+    btn.addEventListener('click', func.switchMode)
+  });
   if ( doc.classList.contains('dark-mode') ) {
     btn.innerText = 'Light mode';
     btn.className = 'darkmode-button';
+    btnAuth.className = 'darkmode-button';
   } else {
     btn.innerText = 'Dark mode';
     btn.className = 'lightmode-button';
+    btnAuth.className = 'lightmode-button';
   }
 
   let head = document.getElementById('head');
@@ -72,7 +83,9 @@ async function getCategories(data) {
 
   head.appendChild(select);
   head.appendChild(select2);
-  main.appendChild(btn);
+
+  
+  loginBlock.appendChild(btn);
 }
 
 function filterData(e) {
@@ -83,24 +96,43 @@ function filterData(e) {
   }); 
 }
 
-function switchMode() {
-  let doc = document.getElementById('main');
-  let select = document.getElementById('category');
-  let select2 = document.getElementById('api');
-  let switchBtn = document.getElementById('switchBtn');
-  if ( doc.classList.contains('dark-mode') ) {
-    doc.className = 'light-mode';
-    select.className = 'light-mode';
-    select2.className = 'light-mode';
-    switchBtn.className = 'lightmode-button';
-    switchBtn.innerText = 'Dark mode';
-    localStorage.setItem('color', 'light-mode');    
+let modal = document.getElementById('modal');
+
+let btnAuth = document.getElementById('btnAuth');
+btnAuth.addEventListener('click', login);
+
+function login() {
+  let user = localStorage.getItem('user');
+  const authTxt = document.getElementById('authTxt');
+  if (!user) {
+    modal.classList.toggle('modal-overlay_active');
   } else {
-    doc.className = 'dark-mode';
-    select.className = 'dark-mode';
-    select2.className = 'dark-mode';
-    switchBtn.className = 'darkmode-button';
-    switchBtn.innerText = 'Light mode';
-    localStorage.setItem('color', 'dark-mode');
+    localStorage.removeItem('user');
+    console.log('you are already authorised');
+    authTxt.innerText = 'You are not authorised';
+    btnAuth.innerText = 'Login';
+  }  
+}
+
+let btnModal = document.getElementById('btnModal');
+btnModal.addEventListener('click', authoriseUser);
+
+function authoriseUser() {
+  let inputVal = document.getElementById('inputModal').value;
+  localStorage.setItem('user', inputVal);
+  modal.classList.toggle('modal-overlay_active');
+  const authTxt = document.getElementById('authTxt');
+  authTxt.innerText = `Welcome, ${inputVal} !`;
+  btnAuth.innerText = 'Logout';
+  document.getElementById('inputModal').value = '';
+}
+
+let btnStorage = document.getElementById('btnStorage');
+btnStorage.addEventListener('click', consoleStorage);
+
+function consoleStorage() {
+  localStorage.clear();
+  for (let i = 0; i < localStorage.length; i++)   {
+    console.log(localStorage.key(i) + "=[" + localStorage.getItem(localStorage.key(i)) + "]");
   }
 }
